@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>4’lü Kolaj + Büyütme Modal + Navbar</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background-color: #DEDEDE;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background-color: #DEDEDE;
+      color: #2e3d36;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 1100;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .nav-logo img {
+      height: 240px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+    }
+
+    nav a {
+      color: #2e3d36;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #0d2d2a;
+    }
+
+    /* SAYFA DÜZENİ */
+    .page-wrapper {
+      display: flex;
+      justify-content: center;
+      max-width: 1400px;
+      width: 100%;
+      padding: 100px 20px 60px; /* navbar altından boşluk */
+      box-sizing: border-box;
+      gap: 40px;
+    }
+
+    /* SOL VE SAĞ BLOKLAR */
+    .side-block {
+      width: 250px;
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      color: #2e3d36;
+      font-size: 16px;
+      line-height: 1.5;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      height: fit-content;
+      flex-shrink: 0;
+    }
+
+    /* ORTAK İÇERİK */
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 60px;
+      color: #2e3d36;
+    }
+
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 100px;
+      width: 100%;
+    }
+
+    .quadruple {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      height: 340px;
+      margin: 0 auto;
+    }
+
+    .quadruple img {
+      position: absolute;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .quadruple img:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+
+    .img-1 { top: 0; left: 100px; width: 240px; z-index: 4; transform: rotate(-3deg); }
+    .img-2 { top: 40px; left: 330px; width: 220px; z-index: 3; transform: rotate(5deg); }
+    .img-3 { top: 80px; left: 540px; width: 240px; z-index: 2; transform: rotate(-4deg); }
+    .img-4 { top: 20px; left: 780px; width: 220px; z-index: 1; transform: rotate(6deg); }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1200;
+    }
+
+    .modal.active { display: flex; }
+
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: #fff;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      font-weight: bold;
+      font-size: 22px;
+      color: #333;
+      cursor: pointer;
+      line-height: 32px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      user-select: none;
+      z-index: 1300;
+    }
+
+    /* FOOTER */
+    footer {
+      height: 1px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #DEDEDE;
+      color: #333;
+      font-size: 18px;
+      font-weight: 500;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+      padding: 10px 0;
+      width: 100%;
+      box-sizing: border-box;
+      margin-top: 40px;
+    }
+
+    /* RESPONSİVE */
+    @media (max-width: 1024px) {
+      .page-wrapper {
+        gap: 20px;
+        padding: 100px 10px 60px;
+      }
+
+      .side-block {
+        width: 200px;
+        font-size: 14px;
+        padding: 15px;
+      }
+
+      .content {
+        max-width: 700px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page-wrapper {
+        flex-direction: column;
+        padding: 120px 20px 60px;
+        gap: 30px;
+      }
+
+      .side-block {
+        width: 100%;
+        max-width: none;
+        box-shadow: none;
+        background: transparent;
+        padding: 0;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .content {
+        max-width: 100%;
+      }
+
+      .quadruple {
+        position: static;
+        height: auto;
+        max-width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .quadruple img {
+        position: static;
+        width: 90% !important;
+        transform: none !important;
+        margin: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <img src="eliasigacik_logo.png" alt="eliasigacik logo" />
+  </div>
+  <div class="nav-links">
+    <a href="#">Ana Sayfa</a>
+    <a href="#">Hakkımızda</a>
+    <a href="#">İletişim</a>
+  </div>
+</nav>
+
+<!-- Sayfa düzeni: sol içerik - orta içerik - sağ içerik -->
+<div class="page-wrapper">
+
+  <div class="side-block">
+    <h3>Rezervasyon</h3>
+    <p>0 (555) 123 45 67</p>
+    <p>Her gün 12:00 - 00:00</p>
+  </div>
+
+  <div class="content">
+    <div class="page-header">
+      <h1>Lezzetli Meze ve Balık Koleksiyonu</h1>
+      <p>Türkiye’nin en özel mezeleri ve taze balıkları sizler için özenle seçildi. Görsellerin üzerine tıklayarak büyütebilirsiniz.</p>
+    </div>
+
+    <div class="gallery">
+      <div class="quadruple">
+        <img src="recomended.png" alt="Resim 1" class="img-1" />
+        <img src="balık.png" alt="Resim 2" class="img-2" />
+        <img src="kokorec1.png" alt="Resim 3" class="img-3" />
+        <img src="meze1.png" alt="Resim 4" class="img-4" />
+      </div>
+
+      <div class="quadruple">
+        <img src="atatürk.png" alt="Resim 5" class="img-1" />
+        <img src="meze2.png" alt="Resim 6" class="img-2" />
+        <img src="arak.png" alt="Resim 7" class="img-3" />
+        <img src="rakı.png" alt="Resim 8" class="img-4" />
+      </div>
+
+      <div class="quadruple">
+        <img src="meze4.png" alt="Resim 9" class="img-1" />
+        <img src="meze3.png" alt="Resim 10" class="img-2" />
+        <img src="meze5.png" alt="Resim 11" class="img-3" />
+        <img src="şarap.png" alt="Resim 12" class="img-4" />
+      </div>
+    </div>
+  </div>
+
+  <div class="side-block">
+    <h3>Adres</h3>
+    <p>Sığacık Mah. Liman Sok. No:4</p>
+    <p>Seferihisar / İzmir</p>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <img src="" alt="Büyütülmüş Resim" id="modalImage" />
+  </div>
+</div>
+
+<footer>
+  © Elia Sığacık 2022
+</footer>
+
+<script>
+  const modal = document.getElementById('modal');
+  const modalImage = document.getElementById('modalImage');
+  const modalClose = document.getElementById('modalClose');
+
+  document.querySelectorAll('.quadruple img').forEach(img => {
+    img.addEventListener('click', () => {
+      modalImage.src = img.src;
+      modalImage.alt = img.alt;
+      modal.classList.add('active');
+    });
+  });
+
+  modalClose.addEventListener('click', () => {
+    modal.classList.remove('active');
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+    }
+  });
+</script>
+
+</body>
+</
